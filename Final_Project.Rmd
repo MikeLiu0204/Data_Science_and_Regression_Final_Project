@@ -5,6 +5,30 @@ date: "2024-12-05"
 ---
 
 ```{r setup, include=FALSE}
+# consider removing code from knit file
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
+```{r}
+library(Stat2Data)
+data("Election08")
+```
+
+# Research Question
+
+
+# Expected Findings
+Note target population.
+
+# Methodology
+
+
+# Dataset Information
+Description/Summary.
+Sources of data.
+
+# Process
+
+
+# Conclusion
