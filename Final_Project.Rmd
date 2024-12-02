@@ -1,5 +1,6 @@
 ---
 title: "Final Project (Change name to dataset domain)"
+author: "Your Name"
 output: pdf_document
 date: "2024-12-05"
 ---
@@ -14,21 +15,87 @@ knitr::opts_chunk$set(echo = TRUE)
 library(Stat2Data)
 data("Election08")
 ```
+## Abstract
+This project examines state-level factors predicting whether Barack Obama or John McCain won in the 2008 U.S. presidential election. Logistic regression models are used to analyze and compare predictors, identifying the most significant contributors to election outcomes.
+
+## Introduction
+The goal is to determine which state-level socioeconomic and political factors best predict election results using logistic regression. This analysis helps understand the relationships among predictors like income, education levels, and political leanings.
 
 # Research Question
 
 
 # Expected Findings
-Note target population.
+Note the target population.
 
 # Methodology
 
 
 # Dataset Information
-Description/Summary.
-Sources of data.
+data(Election08)
+str(Election08)
+summary(Election08)
+The dataset includes 51 observations (50 states + DC) with variables related to income, education, and political alignment. The dependent variable is `ObamaWin`, a binary outcome (1 = Obama won, 0 = McCain won).
 
 # Process
+summary(Election08)
 
+# Visualize relationships
+ggplot(Election08, aes(x = Income, y = Dem.Rep, color = factor(ObamaWin))) +
+  geom_point() + labs(color = "Obama Win")
+
+# Check Conditions
+# Correlation matrix
+cor_matrix <- cor(Election08[, c("Income", "HS", "BA", "Dem.Rep")])
+print(cor_matrix)
+
+# Variance Inflation Factor (VIF)
+vif(lm(Dem.Rep ~ Income + HS + BA, data = Election08))
+
+# Logistic regression for each predictor
+models <- list(
+  Income = glm(ObamaWin ~ Income, data = Election08, family = "binomial"),
+  HS = glm(ObamaWin ~ HS, data = Election08, family = "binomial"),
+  BA = glm(ObamaWin ~ BA, data = Election08, family = "binomial"),
+  DemRep = glm(ObamaWin ~ Dem.Rep, data = Election08, family = "binomial")
+)
+
+# Summarize models
+lapply(models, summary)
+
+final_model <- glm(ObamaWin ~ Income + HS + BA + Dem.Rep, data = Election08, family = "binomial")
+summary(final_model)
+
+# Model Comparison
+compare_metrics <- function(model, data, response) {
+  # Predicted probabilities
+  preds <- predict(model, type = "response")
+  # Binary classification (threshold = 0.5)
+  preds_class <- ifelse(preds > 0.5, 1, 0)
+  
+  # SSE: Sum of Squares for Error
+  sse <- sum((data[[response]] - preds_class)^2)
+  
+  # SSM: Sum of Squares for Model
+  mean_response <- mean(data[[response]])
+  ssm <- sum((preds_class - mean_response)^2)
+  
+  # SSR: Total Sum of Squares
+  ssr <- sum((data[[response]] - mean_response)^2)
+  
+  # R-squared
+  r_squared <- 1 - (sse / ssr)
+  
+  # Adjusted R-squared
+  n <- nrow(data)
+  p <- length(coef(model)) - 1
+  adj_r_squared <- 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
+  
+  list(SSE = sse, SSM = ssm, SSR = ssr, R_squared = r_squared, Adjusted_R_squared = adj_r_squared)
+}
+
+# Compute metrics for all models
+model_metrics <- lapply(models, function(m) compare_metrics(m, Election08, "ObamaWin"))
+model_metrics[["Final Model"]] <- compare_metrics(final_model, Election08, "ObamaWin")
+model_metrics
 
 # Conclusion
