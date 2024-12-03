@@ -30,7 +30,7 @@ Note the target population.
 
 # Methodology
 The dataset of reference contains information from all 50 states and the District of Columbia for the 2008 U.S. presidential election.
-This analysis consists of 5 models, 4 of which investigates if Income (the Per capita income in the state as of 2007 (in dollars)), HS (percentage of adults with at least a high school education), BA (percentage of adults with at least a high school education), and the difference in the percentage democrat and the percentage of Republican, is associated with the odds that Obama (Democrat) wins state in 2008 (ObamaWin = 1), and 1 of which investigates the joint effect of these 4 variables. 
+This analysis consists of 5 models, 4 of which investigates if Income (the Per capita income in the state as of 2007 (in dollars)), HS (percentage of adults with at least a high school education), BA (percentage of adults with at least a high school education), and Dem.Rep (the difference in the percentage democrat and the percentage of Republican), is associated with the odds that Obama (Democrat) wins state in 2008 (ObamaWin = 1), and 1 of which investigates the joint effect of these 4 variables. 
 
 # Dataset Information
 data(Election08)
@@ -48,6 +48,7 @@ ggplot(Election08, aes(x = Income, y = Dem.Rep, color = factor(ObamaWin))) +
 # Check Conditions
 The conditions for logistic regressions are linearity, randomness, and independence. 
 Linearity: this means that there should exist a linear relationship between log(odds) and the predictor. 
+The process of data collection is assumed to be random. Each observation is assumed to be independent. 
 
 # Correlation matrix
 cor_matrix <- cor(Election08[, c("Income", "HS", "BA", "Dem.Rep")])
