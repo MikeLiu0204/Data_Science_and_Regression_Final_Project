@@ -1,6 +1,6 @@
 ---
-title: "Final Project (Change name to dataset domain)"
-author: "Your Name"
+title: "Exploration of the Influential Factor of the Election Results in 2008"
+author: "Daisy, Mike, and Osvaldo"
 output: pdf_document
 date: "2024-12-05"
 ---
@@ -16,21 +16,20 @@ library(Stat2Data)
 data("Election08")
 ```
 ## Abstract
-This project examines state-level factors predicting whether Barack Obama or John McCain won in the 2008 U.S. presidential election. Logistic regression models are used to analyze and compare predictors, identifying the most significant contributors to election outcomes.
+This project examines state-level factors predicting whether Barack Obama or John McCain won the 2008 U.S. presidential election. Logistic regression models analyze and compare predictors, identifying the most significant contributors to election outcomes.
 
 ## Introduction
-The goal is to determine which state-level socioeconomic and political factors best predict election results using logistic regression. This analysis helps understand the relationships among predictors like income, education levels, and political leanings.
+The goal is to use logistic regression to determine which state-level socioeconomic and political factors best predict election results. This analysis helps understand the relationships among predictors like income, education levels, and political leanings.
 
 # Research Question
-
+What is the most influential factor in predicting the presidential election result in 2008?
 
 # Expected Findings
 Note the target population.
 
 
 # Methodology
-The dataset of reference contains information from all 50 states and the District of Columbia for the 2008 U.S. presidential election.
-This analysis consists of 5 models, 4 of which investigates if Income (the Per capita income in the state as of 2007 (in dollars)), HS (percentage of adults with at least a high school education), BA (percentage of adults with at least a high school education), and Dem.Rep (the difference in the percentage democrat and the percentage of Republican), is associated with the odds that Obama (Democrat) wins state in 2008 (ObamaWin = 1), and 1 of which is an interaction model that investigates the joint effect of these 4 variables. 
+The dataset of reference contains information from all 50 states and the District of Columbia for the 2008 U.S. presidential election. This analysis consists of 5 models, 4 of which investigate if Income (the Per capita income in the state as of 2007 (in dollars)), HS (percentage of adults with at least a high school education), BA (percentage of adults with at least a high school education), and Dem.Rep (the difference in the percentage of Democrats and the percentage of Republicans) is associated with the odds that Obama (Democrat) wins state in 2008 (ObamaWin = 1), and 1 of which is an interaction model that investigates the joint effect of these four variables.
 
 # Dataset Information
 data(Election08)
@@ -47,8 +46,32 @@ ggplot(Election08, aes(x = Income, y = Dem.Rep, color = factor(ObamaWin))) +
 
 # Check Conditions
 The conditions for logistic regressions are linearity, randomness, and independence. 
-Linearity: this means that there should exist a linear relationship between log(odds) and the predictor. 
-The process of data collection is assumed to be random. Each observation is assumed to be independent. 
+Linearity: this means that there should exist a linear relationship between log(odds) and the predictor.
+The process of data collection is assumed to be random, and each observation is assumed to be independent.
+
+logistic_model <- glm(ObamaWin ~ Income + HS + BA + Dem.Rep, data = Election08, family = "binomial")
+
+Election08$logit <- predict(logistic_model, type = "link")  # Logit values
+
+ggplot(Election08, aes(x = Income, y = logit)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(title = "Linearity Check: Income vs Logit", x = "Income", y = "Logit")
+
+ggplot(Election08, aes(x = HS, y = logit)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(title = "Linearity Check: HS vs Logit", x = "HS", y = "Logit")
+
+ggplot(Election08, aes(x = BA, y = logit)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(title = "Linearity Check: BA vs Logit", x = "BA", y = "Logit")
+
+ggplot(Election08, aes(x = Dem.Rep, y = logit)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(title = "Linearity Check: Dem.Rep vs Logit", x = "Dem.Rep", y = "Logit")
 
 # Correlation matrix
 cor_matrix <- cor(Election08[, c("Income", "HS", "BA", "Dem.Rep")])
