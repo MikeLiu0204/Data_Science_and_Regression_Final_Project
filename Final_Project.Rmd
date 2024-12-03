@@ -1,6 +1,6 @@
 ---
 title: "Final Project (Change name to dataset domain)"
-author: "Your Name"
+author: Mike Daisy Osvaldo
 output: pdf_document
 date: "2024-12-05"
 ---
